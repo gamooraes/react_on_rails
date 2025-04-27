@@ -33,38 +33,38 @@ function EditPostForm() {
         loadPost();
     }, [id]);
 
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setLoading(true);
+        setError(null);
+        const postData = { title, body };
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(postData),
+            });
+
+            if (response.ok) {
+                navigate(`/posts/${id}`);
+            } else {
+                throw response;
+            }
+        } catch (e) {
+            setError("An error occurred. Awkward...");
+            console.log("Error: ", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="edit-post-form">
             <h2>Edit Post</h2>
             {error && <p className="error">{error}</p>}
-            <form
-                onSubmit={async (event) => {
-                    event.preventDefault();
-                    setLoading(true);
-                    setError(null);
-                    const postData = { title, body };
-                    try {
-                        const response = await fetch(`${API_URL}/${id}`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(postData),
-                        });
-
-                        if (response.ok) {
-                            navigate(`/posts/${id}`);
-                        } else {
-                            throw response;
-                        }
-                    } catch (e) {
-                        setError("An error occurred. Awkward...");
-                        console.log("Error: ", e);
-                    } finally {
-                        setLoading(false);
-                    }
-                }}
-            >
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="title">Title:</label>
                     <input
