@@ -1,7 +1,7 @@
 //Create a new component EditPostForm to edit a post
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_URL } from "../../constants";
+import { fetchPost, editPost } from "../../services/postService";
 
 function EditPostForm() {
     const { id } = useParams();
@@ -15,19 +15,13 @@ function EditPostForm() {
     useEffect(() => {
         async function loadPost() {
             try {
-                const response = await fetch(`${API_URL}/${id}`);
-                if (response.ok) {
-                    const json = await response.json();
-                    setTitle(json.title);
-                    setBody(json.body);
-                } else {
-                    throw response;
-                }
+                const json = await fetchPost(id);
+                setTitle(json.title);
+                setBody(json.body);
+                setLoading(false);
             } catch (e) {
                 setError("An error occurred. Awkward...");
                 console.log("Error: ", e);
-            } finally {
-                setLoading(false);
             }
         }
         loadPost();
@@ -39,19 +33,8 @@ function EditPostForm() {
         setError(null);
         const postData = { title, body };
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(postData),
-            });
-
-            if (response.ok) {
-                navigate(`/posts/${id}`);
-            } else {
-                throw response;
-            }
+            await editPost(id, postData);
+            navigate(`/posts/${id}`);
         } catch (e) {
             setError("An error occurred. Awkward...");
             console.log("Error: ", e);
