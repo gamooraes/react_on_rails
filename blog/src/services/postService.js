@@ -17,6 +17,36 @@ async function fetchPost(id) {
     return response.json();
 }
 
+async function createPost(params) {
+    const response = await fetch(`${API_URL}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error(response.statusText);
+    }
+}
+
+async function editPost(id, params) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error(response.statusText);
+    }
+}
+
 async function deletePost(id) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "DELETE",
@@ -28,4 +58,4 @@ async function deletePost(id) {
     }
 }
 
-export { fetchAllPosts, fetchPost, deletePost };
+export { fetchAllPosts, fetchPost, createPost, deletePost, editPost };

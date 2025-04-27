@@ -1,7 +1,7 @@
 //Create a component for new posts in the app
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../constants";
+import { createPost } from "../../services/postService";
 
 function NewPostForm() {
     const [title, setTitle] = useState("");
@@ -17,20 +17,9 @@ function NewPostForm() {
         setError(null);
         const postData = { title, body };
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(postData),
-            });
-
-            if (response.ok) {
-                const { id } = await response.json();
-                navigate(`/posts/${id}`);
-            } else {
-                throw response;
-            }
+            await createPost(postData);
+            const { id } = await createPost(postData);
+            navigate(`/posts/${id}`);
         } catch (e) {
             setError("An error occurred. Awkward...");
             console.log("Error: ", e);
