@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { API_URL } from "../../constants";
-
+import { fetchAllPosts, deletePost as deletePostService } from "../../services/postService";
 
 function PostsList() {
     const [posts, setPosts] = useState([]);
@@ -12,20 +11,13 @@ function PostsList() {
     const navigate = useNavigate();
     // Fetch posts from API
     useEffect(() => {
-        async function loadPosts(params) {
+        async function loadPosts() {
             try {
-                const response = await fetch(`${API_URL}`);
-                if (response.ok) {
-                    const json = await response.json();
-                    setPosts(json);
-                }
-                else {
-                    throw response;
-                }
+                const data = await fetchAllPosts();
+                setPosts(data);
+                setLoeading(false);
             } catch (e) {
                 setError("An error ocurred. Awkward...")
-                console.log("Error: ", e);
-            } finally {
                 setLoeading(false);
             }
         }
@@ -36,15 +28,9 @@ function PostsList() {
         setLoeading(true);
         setError(null);
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-            });
-            if (response.ok) {
-                setPosts(posts.filter((post) => post.id !== id));
-                navigate(`/`);
-            } else {
-                throw response;
-            }
+            deletePostService(id);
+            setPosts(posts.filter((post) => post.id !== id));
+            navigate("/");
         } catch (e) {
             setError("An error occurred. Awkward...");
             console.log("Error: ", e);
@@ -52,6 +38,7 @@ function PostsList() {
             setLoeading(false);
         }
     }
+
     if (!posts) return null;
     return <div>
         {posts.map((post) => (
