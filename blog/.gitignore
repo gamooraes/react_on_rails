@@ -26,3 +26,6 @@ dist-ssr
 # Env files
 .env
 .env.development
+
+#Should not push the coverage directory
+coverage
