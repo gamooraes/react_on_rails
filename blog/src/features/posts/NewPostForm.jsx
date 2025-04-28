@@ -17,9 +17,8 @@ function NewPostForm() {
         setError(null);
         const postData = { title, body };
         try {
-            await createPost(postData);
-            const { id } = await createPost(postData);
-            navigate(`/posts/${id}`);
+            const response = await createPost(postData);
+            navigate(`/posts/${response.id}`);
         } catch (e) {
             setError("An error occurred. Awkward...");
             console.log("Error: ", e);
