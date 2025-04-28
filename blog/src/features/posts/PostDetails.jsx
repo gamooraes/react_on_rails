@@ -1,5 +1,5 @@
 //Create the component PostDetails to show the details of a post
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { deletePost as deletePostService, fetchPost } from "../../services/postService";

@@ -1,5 +1,5 @@
 //API URL comes from the .env.development file
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { fetchAllPosts, deletePost as deletePostService } from "../../services/postService";

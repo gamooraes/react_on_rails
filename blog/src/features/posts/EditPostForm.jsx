@@ -1,5 +1,5 @@
 //Create a new component EditPostForm to edit a post
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPost, updatePost } from "../../services/postService";
 
