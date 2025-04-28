@@ -1,12 +1,11 @@
 //Create a new component EditPostForm to edit a post
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchPost, editPost } from "../../services/postService";
+import { fetchPost, updatePost } from "../../services/postService";
 
 function EditPostForm() {
     const { id } = useParams();
-    const [title, setTitle] = useState("");
-    const [body, setBody] = useState("");
+    const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -16,8 +15,7 @@ function EditPostForm() {
         async function loadPost() {
             try {
                 const json = await fetchPost(id);
-                setTitle(json.title);
-                setBody(json.body);
+                setPost(json);
                 setLoading(false);
             } catch (e) {
                 setError("An error occurred. Awkward...");
@@ -29,19 +27,20 @@ function EditPostForm() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        setLoading(true);
-        setError(null);
-        const postData = { title, body };
+        const updatedPost = {
+            title: post.title,
+            body: post.body,
+        };
         try {
-            await editPost(id, postData);
-            navigate(`/posts/${id}`);
+            const response = await updatePost(id, updatedPost);
+            navigate(`/posts/${response.id}`);
         } catch (e) {
             setError("An error occurred. Awkward...");
             console.log("Error: ", e);
-        } finally {
-            setLoading(false);
         }
     }
+
+    if (!post) return <h2>Loading...</h2>;
 
     return (
         <div className="edit-post-form">
@@ -53,8 +52,8 @@ function EditPostForm() {
                     <input
                         type="text"
                         id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={post?.title || ""}
+                        onChange={(e) => setPost({ ...post, title: e.target.value })}
                         required
                     />
                 </div>
@@ -62,8 +61,8 @@ function EditPostForm() {
                     <label htmlFor="body">Body:</label>
                     <textarea
                         id="body"
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
+                        value={post?.body || ""}
+                        onChange={(e) => setPost({ ...post, body: e.target.value })}
                         required
                     />
                 </div>
@@ -73,5 +72,6 @@ function EditPostForm() {
             </form>
         </div>
     );
+
 }
 export default EditPostForm;

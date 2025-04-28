@@ -17,13 +17,13 @@ async function fetchPost(id) {
     return response.json();
 }
 
-async function createPost(params) {
+async function createPost(postData) {
     const response = await fetch(`${API_URL}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(params),
+        body: JSON.stringify(postData),
     });
     if (response.ok) {
         return response.json();
@@ -32,7 +32,7 @@ async function createPost(params) {
     }
 }
 
-async function editPost(id, params) {
+async function updatePost(id, params) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers: {
@@ -40,11 +40,10 @@ async function editPost(id, params) {
         },
         body: JSON.stringify(params),
     });
-    if (response.ok) {
-        return response.json();
-    } else {
+    if (!response.ok) {
         throw new Error(response.statusText);
     }
+    return response.json();
 }
 
 async function deletePost(id) {
@@ -58,4 +57,4 @@ async function deletePost(id) {
     }
 }
 
-export { fetchAllPosts, fetchPost, createPost, deletePost, editPost };
+export { fetchAllPosts, fetchPost, createPost, deletePost, updatePost };
