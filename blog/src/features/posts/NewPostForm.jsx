@@ -1,5 +1,5 @@
 //Create a component for new posts in the app
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../services/postService";
 
