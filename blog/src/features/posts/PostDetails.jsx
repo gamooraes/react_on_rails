@@ -10,7 +10,7 @@ function PostDetails() {
     const [, setLoading] = useState(true);
     const [, setError] = useState(null);
     const navigate = useNavigate();
-    console.log("PostDetails: ", id);
+
     // Fetch post from API
     useEffect(() => {
         async function loadPost() {
@@ -18,9 +18,8 @@ function PostDetails() {
                 const json = await fetchPost(id);
                 setPost(json);
                 setLoading(false);
-            } catch (e) {
-                setError("An error occurred. Awkward...");
-                console.log("Error: ", e);
+            } catch (error) {
+                console.error("Failed to fetch a post. Awkward...", error);
             }
         }
         loadPost();
@@ -31,13 +30,11 @@ function PostDetails() {
         setError(null);
         try {
             await deletePostService(id);
-            setPost(posts.filter((post) => post.id !== id));
-            navigate("/");
-        } catch (e) {
-            setError("An error occurred. Awkward...");
-            console.log("Error: ", e);
+        } catch (error) {
+            console.error("An error occurred. Awkward...", error);
         } finally {
             setLoading(false);
+            navigate("/");
         }
     }
     if (!post) return null;
