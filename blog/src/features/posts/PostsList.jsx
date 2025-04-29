@@ -17,7 +17,7 @@ function PostsList() {
                 setPosts(data);
                 setLoeading(false);
             } catch (e) {
-                setError("An error ocurred. Awkward...")
+                console.error("Failed to fetch a post. Awkward...", e);
                 setLoeading(false);
             }
         }
@@ -28,18 +28,17 @@ function PostsList() {
         setLoeading(true);
         setError(null);
         try {
-            deletePostService(id);
+            await deletePostService(id);
             setPosts(posts.filter((post) => post.id !== id));
             navigate("/");
         } catch (e) {
-            setError("An error occurred. Awkward...");
-            console.log("Error: ", e);
+            console.error("An error occurred. Awkward...", e);
         } finally {
             setLoeading(false);
         }
     }
 
-    if (!posts) return null;
+    if (!posts || posts.length === 0) return null;
     return <div>
         {posts.map((post) => (
             <div key={post.id} className="post-container">
