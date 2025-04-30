@@ -19,9 +19,8 @@ function NewPostForm() {
         try {
             const response = await createPost(postData);
             navigate(`/posts/${response.id}`);
-        } catch (e) {
-            setError("An error occurred. Awkward...");
-            console.log("Error: ", e);
+        } catch (error) {
+            console.error("An error occurred. Awkward...", error);
         } finally {
             setLoading(false);
         }
@@ -29,7 +28,6 @@ function NewPostForm() {
     return (
         <div className="new-post-form">
             <h2>Create a New Post</h2>
-            {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="title">Title:</label>
