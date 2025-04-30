@@ -2,7 +2,7 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import PostDetails from "./PostDetails";
 import * as postsService from "../../services/postService";
-
+import { API_URL } from "../../constants";
 
 jest.mock("../../services/postService", () => ({
     fetchPost: jest.fn(),
@@ -11,7 +11,7 @@ jest.mock("../../services/postService", () => ({
 jest.mock("../../constants", () => ({
     API_URL: "http://test-api-url",
 }));
-global.console.error = jest.fn();
+
 const mockPost = {
     id: 1,
     title: "Post 1",
@@ -20,14 +20,16 @@ const mockPost = {
 const postText = "Post List";
 const fetchError = new Error("Failed to fetch.");
 const deleteError = new Error("Delete failed");
-const consoleSpy = jest.spyOn(console, "error")
+
 describe("PostDetails", () => {
     beforeEach(() => {
         postsService.fetchPost.mockResolvedValue(mockPost);
+        consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
     });
 
     afterEach(() => {
         jest.clearAllMocks();
+        consoleSpy.mockRestore();
     });
 
     const renderComponents = () => {
@@ -50,12 +52,9 @@ describe("PostDetails", () => {
 
     test("handle error when fetchin the post details", async () => {
         postsService.fetchPost.mockRejectedValue(fetchError);
-        consoleSpy.mockImplementation(jest.fn())
         renderComponents();
 
         await waitFor(() => { expect(consoleSpy).toHaveBeenCalledWith("Failed to fetch a post. Awkward...", fetchError) });
-
-        consoleSpy.mockRestore();
 
     });
 
@@ -72,17 +71,20 @@ describe("PostDetails", () => {
             expect(screen.queryByText(postText)).toBeInTheDocument();
         });
     });
-
     test("handle error when deleting the post", async () => {
         postsService.deletePost.mockRejectedValue(deleteError);
-        consoleSpy.mockImplementation(jest.fn())
         renderComponents();
+
         await waitFor(() => {
-            fireEvent.click(screen.getByText("Delete"));
+            expect(screen.getByText(mockPost.title)).toBeInTheDocument();
         });
+
+        fireEvent.click(screen.getByText("Delete"));
+
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith("An error occurred. Awkward...", deleteError)
+            expect(consoleSpy).toHaveBeenCalledWith("An error occurred. Awkward...", deleteError);
         });
-        consoleSpy.mockRestore();
+
+
     });
-});
+}); 

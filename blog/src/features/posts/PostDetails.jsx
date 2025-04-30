@@ -33,11 +33,10 @@ function PostDetails() {
         } catch (error) {
             console.error("An error occurred. Awkward...", error);
         } finally {
-            setLoading(false);
             navigate("/");
         }
     }
-    if (!post) return null;
+    if (!post) return <p>Loading...</p>;
 
     return (
         <div className="post-details">
@@ -47,7 +46,7 @@ function PostDetails() {
             {" | "}
             <Link to={`/posts/edit/${post.id}`}>Edit Post</Link>
             {" | "}
-            <button onClick={() => deletePost(post.id)} className="post-link">
+            <button onClick={deletePost} className="post-link">
                 Delete
             </button>
         </div>
