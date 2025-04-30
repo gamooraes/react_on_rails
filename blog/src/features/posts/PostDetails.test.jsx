@@ -8,6 +8,7 @@ jest.mock("../../services/postService", () => ({
     fetchPost: jest.fn(),
     deletePost: jest.fn(),
 }));
+
 jest.mock("../../constants", () => ({
     API_URL: "http://test-api-url",
 }));
