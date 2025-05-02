@@ -63,7 +63,7 @@ describe("EditPostForm", () => {
         fireEvent.change(screen.getByLabelText(/title/i), { target: { value: updatedPost.title } });
         fireEvent.change(screen.getByLabelText(/body/i), { target: { value: updatedPost.body } });
 
-        await waitFor(() => { fireEvent.click(screen.getByText(/save/i)); });
+        await waitFor(() => { fireEvent.click(screen.getByText(/Update Post/i)); });
         await waitFor(() => {
             expect(postsService.updatePost).toHaveBeenCalledWith("1", updatedPost);
         });
@@ -97,7 +97,7 @@ describe("EditPostForm", () => {
 
         postsService.updatePost.mockRejectedValue(updatedPostError);
 
-        fireEvent.click(screen.getByText(/save/i));
+        fireEvent.click(screen.getByText(/Update Post/i));
 
         await waitFor(() => {
             expect(consoleSpy).toHaveBeenCalledWith("Failed to update a post: ", updatedPostError);

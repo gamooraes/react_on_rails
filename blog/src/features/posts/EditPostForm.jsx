@@ -2,12 +2,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPost, updatePost } from "../../services/postService";
+import PostForm from "./PostForm";
 
 function EditPostForm() {
     const { id } = useParams();
     const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     // Fetch post from API
@@ -16,7 +15,6 @@ function EditPostForm() {
             try {
                 const json = await fetchPost(id);
                 setPost(json);
-                setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch a post. Awkward...", error);
             }
@@ -24,14 +22,9 @@ function EditPostForm() {
         loadPost();
     }, [id]);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-        const updatedPost = {
-            title: post.title,
-            body: post.body,
-        };
+    async function handleUpdatePost(formdData) {
         try {
-            const response = await updatePost(id, updatedPost);
+            const response = await updatePost(id, formdData);
             navigate(`/posts/${response.id}`);
         } catch (error) {
             console.error("Failed to update a post: ", error);
@@ -41,33 +34,12 @@ function EditPostForm() {
     if (!post) return <h2>Loading...</h2>;
 
     return (
-        <div className="edit-post-form">
-            <h2>Edit Post</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={post.title}
-                        onChange={(e) => setPost({ ...post, title: e.target.value })}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="body">Body:</label>
-                    <textarea
-                        id="body"
-                        value={post.body}
-                        onChange={(e) => setPost({ ...post, body: e.target.value })}
-                        required
-                    />
-                </div>
-                <button type="submit" >
-                    Save
-                </button>
-            </form>
-        </div>
+        <PostForm
+            post={post}
+            headerText="Edit Post"
+            buttonText="Update Post"
+            onSubmit={handleUpdatePost}
+        ></PostForm>
     );
 
 }
