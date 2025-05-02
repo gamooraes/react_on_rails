@@ -3,6 +3,7 @@ import PostsList from "../features/posts/PostsList";
 import PostDetails from "../features/posts/PostDetails";
 import NewPostForm from "../features/posts/NewPostForm";
 import EditPostForm from "../features/posts/EditPostForm";
+import PostForm from "../features/posts/PostForm";
 
 function AppRoutes() {
     return (

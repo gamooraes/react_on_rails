@@ -71,9 +71,9 @@ describe("Post API tests", () => {
     })
 
     it("handle error when updating a post", async () => {
-        const data = fetchAPI()
+        const mockData = { id: mockPostId, title: "Post 1", body: "This is the body of Post 1" }
         fetch.mockResponseOnce(JSON.stringify({}), { status: 500 });
-        await expect(updatePost(mockPostId, data)).rejects.toThrow();
+        await expect(updatePost(mockPostId, mockData)).rejects.toThrow();
     })
 
     it("handle error when deleting a post", async () => {

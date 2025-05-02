@@ -1,58 +1,27 @@
 //Create a component for new posts in the app
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../services/postService";
+import PostForm from "./PostForm";
 
 function NewPostForm() {
-    const [title, setTitle] = useState("");
-    const [body, setBody] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
-
     // Handle form submission
-    async function handleSubmit(event) {
-        event.preventDefault();
-        setLoading(true);
-        setError(null);
-        const postData = { title, body };
+    const handleNewPost = async (FormData) => {
         try {
-            const response = await createPost(postData);
+            const response = await createPost(FormData);
             navigate(`/posts/${response.id}`);
         } catch (error) {
             console.error("An error occurred. Awkward...", error);
-        } finally {
-            setLoading(false);
-        }
-    }
+        };
+
+    };
+
     return (
-        <div className="new-post-form">
-            <h2>Create a New Post</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="body">Body:</label>
-                    <textarea
-                        id="body"
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                        required
-                    ></textarea>
-                </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? "Creating..." : "Create Post"}
-                </button>
-            </form>
-        </div>
+        < PostForm
+            headerText="Create a New Post"
+            buttonText="Create Post"
+            onSubmit={handleNewPost}
+        ></PostForm >
     );
-}
+};
 export default NewPostForm;
