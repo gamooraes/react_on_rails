@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { deletePost as deletePostService, fetchPost } from "../../services/postService";
+import "../../assets/stylesheets/PostImages.css";;
 
 function PostDetails() {
     const { id } = useParams();
@@ -16,6 +17,7 @@ function PostDetails() {
         async function loadPost() {
             try {
                 const json = await fetchPost(id);
+                console.log(json);
                 setPost(json);
                 setLoading(false);
             } catch (error) {
@@ -41,6 +43,7 @@ function PostDetails() {
     return (
         <div className="post-details">
             <h2>{post.title}</h2>
+            <img src={post.image_url} alt={post.title} className="post-image" />
             <p>{post.body}</p>
             <Link to="/">Back to Posts List</Link>
             {" | "}
