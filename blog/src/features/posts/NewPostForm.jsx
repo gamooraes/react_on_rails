@@ -6,9 +6,15 @@ import PostForm from "./PostForm";
 function NewPostForm() {
     const navigate = useNavigate();
     // Handle form submission
-    const handleNewPost = async (FormData) => {
+    const handleNewPost = async (rawData) => {
+        // Create a new FormData object
+        const formData = new FormData();
+        // Append the data to the FormData object
+        formData.append("post[title]", rawData.title);
+        formData.append("post[body]", rawData.body);
+        formData.append("post[image]", rawData.image);
         try {
-            const response = await createPost(FormData);
+            const response = await createPost(formData);
             navigate(`/posts/${response.id}`);
         } catch (error) {
             console.error("An error occurred. Awkward...", error);

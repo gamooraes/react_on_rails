@@ -24,6 +24,15 @@ function PostForm({ post, headerText, onSubmit, buttonText }) {
                     />
                 </div>
                 <div>
+                    <label htmlFor="image">Image:</label>
+                    <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        onChange={(e) => { setFormData({ ...formData, image: e.target.files[0] }) }}
+                    />
+                </div>
+                <div>
                     <label htmlFor="body">Body:</label>
                     <textarea
                         id="body"
