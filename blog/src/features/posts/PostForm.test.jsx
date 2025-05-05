@@ -10,6 +10,7 @@ describe('PostForm', () => {
     const mockPost = {
         title: 'Test Title',
         body: 'Test Body',
+        image: null,
     };
 
     const mockOnSubmit = jest.fn();
@@ -31,6 +32,7 @@ describe('PostForm', () => {
 
         expect(screen.getByLabelText(/title/i)).toHaveValue('');
         expect(screen.getByLabelText(/body/i)).toHaveValue('');
+        expect(screen.getByLabelText(/image/i)).toHaveValue('');
     });
     test('renders the form with pre-filled fields when a post is provided', () => {
         render(
@@ -46,5 +48,6 @@ describe('PostForm', () => {
 
         expect(screen.getByLabelText(/title/i)).toHaveValue(mockPost.title);
         expect(screen.getByLabelText(/body/i)).toHaveValue(mockPost.body);
+        expect(screen.getByLabelText(/body/i)).toHaveValue(mockPost.image);
     });
 });
