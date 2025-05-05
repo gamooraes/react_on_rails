@@ -48,6 +48,6 @@ describe('PostForm', () => {
 
         expect(screen.getByLabelText(/title/i)).toHaveValue(mockPost.title);
         expect(screen.getByLabelText(/body/i)).toHaveValue(mockPost.body);
-        expect(screen.getByLabelText(/body/i)).toHaveValue(mockPost.image);
+        expect(screen.getByLabelText(/image/i)).toHaveValue('');
     });
 });

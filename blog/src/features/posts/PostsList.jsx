@@ -47,6 +47,9 @@ function PostsList() {
                         {post.title}
                     </Link>
                 </h2>
+                <div className="post-image-container">
+                    {post.image_url ? (<img src={post.image_url} alt={post.title} className="post-image" />) : (<div className="post-image-stub" />)}
+                </div>
                 <div className="post-links">
                     <Link to={`/posts/${post.id}`} className="post-link">
                         View
