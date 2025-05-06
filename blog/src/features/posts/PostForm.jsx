@@ -5,6 +5,7 @@ function PostForm({ post, headerText, onSubmit, buttonText }) {
     const [formData, setFormData] = useState(post || {
         title: "",
         body: "",
+        image: "",
     });
 
     return (
