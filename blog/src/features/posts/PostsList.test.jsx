@@ -76,4 +76,34 @@ describe('PostsList', () => {
 
         expect(container.firstChild).toBeNull();
     });
+
+    test("render image correctly", async () => {
+        const mockPostsWithImage = [
+            { id: 1, title: 'Post 1', image_url: 'http://example.com/image1.jpg' },
+            { id: 2, title: 'Post 2', image_url: 'http://example.com/image2.jpg' },
+        ];
+
+        postsService.fetchAllPosts.mockResolvedValue(mockPostsWithImage);
+
+        render(<PostsList />, { wrapper: MemoryRouter });
+
+        await waitFor(() => { screen.getByText(postText); });
+
+        expect(screen.getByAltText("Post 1")).toHaveAttribute("src", "http://example.com/image1.jpg");
+    });
+
+    test("render div post-image-stub when image_url is not present", async () => {
+        const mockPostsWithStub = [
+            { id: 1, title: 'Post 1' },
+            { id: 2, title: 'Post 2' },
+        ];
+
+        postsService.fetchAllPosts.mockResolvedValue(mockPostsWithStub);
+
+        render(<PostsList />, { wrapper: MemoryRouter });
+
+        await waitFor(() => { screen.getByText(postText); });
+
+        expect(screen.getByText("Post 1").closest("div").querySelector(".post-image-stub")).toBeInTheDocument();
+    });
 });

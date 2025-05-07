@@ -30,7 +30,6 @@ function EditPostForm() {
 
         };
         const formData = objectToFormData({ post: sanitizedData });
-        console.log([...formData.entries()]);
         try {
             const response = await updatePost(id, formData);
             navigate(`/posts/${response.id}`);

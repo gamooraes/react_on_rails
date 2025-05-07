@@ -2,6 +2,7 @@ import { MemoryRouter, Routes, Router } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import NewPostForm from "./NewPostForm";
 import * as postsService from "../../services/postService";
+import { objectToFormData } from "../../utils/formDataHelper";
 
 
 const expectedTitle = "Post 1";
@@ -54,12 +55,24 @@ describe("NewPostForm", () => {
     });
 
     test("submits the form and creates a new post", async () => {
-        const { submitButton } = fillForm(expectedTitle, expectedBody);
+        const { titleInput, bodyInput, submitButton } = fillForm(expectedTitle, expectedBody);
 
-        await waitFor(() => { fireEvent.click(submitButton); });
+        // Mock da função createPost
+        postsService.createPost.mockResolvedValue({ id: 1 });
 
+        // Simula o clique no botão de submissão
+        fireEvent.click(submitButton);
+
+        // Verifica se a função createPost foi chamada com o FormData correto
         await waitFor(() => {
-            expect(postsService.createPost).toHaveBeenCalledWith({ title: expectedTitle, body: expectedBody });
+            expect(postsService.createPost).toHaveBeenCalledTimes(1);
+            const formData = postsService.createPost.mock.calls[0][0]; // Obtém o FormData da chamada
+            expect(formData.get("post[title]")).toBe(expectedTitle);
+            expect(formData.get("post[body]")).toBe(expectedBody);
+        });
+
+        // Verifica se a navegação ocorreu corretamente
+        await waitFor(() => {
             expect(window.location.pathname).toBe("/");
         });
     });

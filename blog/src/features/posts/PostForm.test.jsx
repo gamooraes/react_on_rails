@@ -50,4 +50,29 @@ describe('PostForm', () => {
         expect(screen.getByLabelText(/body/i)).toHaveValue(mockPost.body);
         expect(screen.getByLabelText(/image/i)).toHaveValue('');
     });
+    test('calls onSubmit with the correct data when the form is submitted', async () => {
+        render(
+            <MemoryRouter>
+                <PostForm
+                    headerText="Create Post"
+                    onSubmit={mockOnSubmit}
+                    buttonText="Submit"
+                />
+            </MemoryRouter>
+        );
+
+        fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'New Title' } });
+        fireEvent.change(screen.getByLabelText(/body/i), { target: { value: 'New Body' } });
+        fireEvent.change(screen.getByLabelText(/image/i), { target: { files: [new Blob()] } });
+
+        fireEvent.click(screen.getByText(/submit/i));
+
+        await waitFor(() => {
+            expect(mockOnSubmit).toHaveBeenCalledWith({
+                title: 'New Title',
+                body: 'New Body',
+                image: expect.any(Blob),
+            });
+        });
+    });
 });
