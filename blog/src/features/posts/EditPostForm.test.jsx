@@ -2,6 +2,7 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import EditPostForm from "./EditPostForm";
 import * as postsService from "../../services/postService";
+import { objectToFormData } from "../../utils/formDataHelper";
 
 jest.mock("../../services/postService", () => ({
     updatePost: jest.fn(),
@@ -54,10 +55,12 @@ describe("EditPostForm", () => {
         const updatedPost = {
             title: "Updated Post",
             body: "This is the updated body of Post 1",
+            image: null
         };
 
+        const fomrData = objectToFormData({ post: updatedPost });
         await waitFor(() => {
-            postsService.updatePost.mockResolvedValue(updatedPost);
+            postsService.updatePost.mockResolvedValue(fomrData);
         });
 
         fireEvent.change(screen.getByLabelText(/title/i), { target: { value: updatedPost.title } });
@@ -65,10 +68,11 @@ describe("EditPostForm", () => {
 
         await waitFor(() => { fireEvent.click(screen.getByText(/Update Post/i)); });
         await waitFor(() => {
-            expect(postsService.updatePost).toHaveBeenCalledWith("1", updatedPost);
+            expect(postsService.updatePost).toHaveBeenCalledWith("1", fomrData);
         });
-
-        expect(screen.getByText("Post Details")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText("Post Details")).toBeInTheDocument();
+        });
     });
 
     test("handle error when fetching the post", async () => {

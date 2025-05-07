@@ -17,7 +17,6 @@ function PostDetails() {
         async function loadPost() {
             try {
                 const json = await fetchPost(id);
-                console.log(json);
                 setPost(json);
                 setLoading(false);
             } catch (error) {
