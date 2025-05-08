@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
+  # get "search/Api::V1::Search"
+  get "search/posts"
   # API routes should be in /api/v1, As rodas da API deve estar em /api/v1
   namespace :api do
     namespace :v1 do
+      get "search/posts"
       resources :posts
     end
   end
