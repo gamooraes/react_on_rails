@@ -1,8 +1,8 @@
 //Services file to fetch posts from API, delete posts, create new posts and edit posts
 import { POST_API_URL, SEARCH_API_URL } from "../constants";
 
-async function fetchAllPosts() {
-    const response = await fetch(`${POST_API_URL}`);
+async function fetchAllPosts(page = 1) {
+    const response = await fetch(`${POST_API_URL}?page=${page}`);
     if (!response.ok) {
         throw new Error(response.statusText);
     }
@@ -51,8 +51,8 @@ async function deletePost(id) {
     }
 }
 
-async function searchPosts(query) {
-    const response = await fetch(`${SEARCH_API_URL}/posts/?q=${query}`);
+async function searchPosts(query, page = 1) {
+    const response = await fetch(`${SEARCH_API_URL}/posts/?q=${query}&page=${page}`);
     if (!response.ok) {
         throw new Error(response.statusText);
     }
