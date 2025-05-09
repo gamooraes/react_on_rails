@@ -1,21 +1,27 @@
 import { useState, useEffect } from "react";
 import { fetchAllPosts, searchPosts } from "../services/postService";
 
-function usePostData(searchTerm) {
+function usePostData(searchTerm, page = 1) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setErrror] = useState(null);
+    const [totalPosts, setTotalPosts] = useState(0);
+    const [perPage, setPerPage] = useState(10)
 
     useEffect(() => {
         async function loadPost() {
             try {
                 let data
                 if (searchTerm) {
-                    data = await searchPosts(searchTerm);
+                    data = await searchPosts(searchTerm, page);
                 } else {
-                    data = await fetchAllPosts();
+                    data = await fetchAllPosts(page);
                 }
-                setPosts(data);
+                if (data.posts) {
+                    setPosts(data.posts);
+                    setTotalPosts(data.total_count);
+                    setPerPage(data.per_page);
+                }
                 setLoading(false);
             } catch (e) {
                 setErrror(e);
@@ -24,9 +30,9 @@ function usePostData(searchTerm) {
             }
         }
         loadPost()
-    }, [searchTerm])
+    }, [searchTerm, page])
 
-    return { posts, loading, error }
+    return { posts, loading, error, totalPosts, perPage }
 }
 
 export default usePostData;

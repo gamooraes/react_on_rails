@@ -1,9 +1,10 @@
 //API URL comes from the .env.development file
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, use } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { fetchAllPosts, deletePost as deletePostService } from "../../services/postService";
 import SearchBar from "./SerachBar";
+import Pagination from "./Pagination";
 import usePostData from '../../hooks/usePostData';
 import useURLSearchParam from '../../hooks/useURLSearchParam';
 
@@ -12,19 +13,33 @@ function PostsList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setdebouncedSearchTerm] =
         useURLSearchParam("serach")
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialPageFromURL = Number(searchParams.get("page") || "1");
+    const [currentPage, setCurrentPage] = useState(initialPageFromURL)
     const navigate = useNavigate();
 
     const {
         posts: fetchedPost,
+        totalPosts,
+        perPage,
         loading,
         error,
-    } = usePostData(debouncedSearchTerm);
+
+    } = usePostData(debouncedSearchTerm, currentPage);
     // Fetch posts from API
     useEffect(() => {
         if (fetchedPost) {
             setPosts(fetchedPost)
         }
     }, [fetchedPost])
+
+    useEffect(() => {
+        const initialSearchTerm = searchParams.get("search") || "";
+        setSearchTerm(initialSearchTerm);
+
+        const pageFromURL = searchParams.get("page") || "1";
+        setCurrentPage(Number(pageFromURL))
+    }, [searchParams])
     // Delete post
     async function deletePost(id) {
         try {
@@ -44,6 +59,11 @@ function PostsList() {
         setdebouncedSearchTerm(searchValue);
     };
 
+    const handlePageChance = (page) => {
+        setCurrentPage(page);
+
+        setSearchParams({ search: debouncedSearchTerm, page: page });
+    };
     if (!posts || posts.length === 0) return null;
     return <div>
         <SearchBar
@@ -78,6 +98,12 @@ function PostsList() {
                 </div>
             </div>
         ))}
+        <Pagination
+            currentPage={currentPage}
+            totalPosts={totalPosts}
+            postsPerPage={perPage}
+            OnPageChange={handlePageChance}
+        />
     </div>
 }
 export default PostsList;
